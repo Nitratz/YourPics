@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">YourPics</string>
+
+    <string name="profile_tab">Profile</string>
+    <string name="favorite_tab">Favoris</string>
+    <string name="add_photo_tab">Partager</string>
+    <string name="home_tab">Acceuil</string>
+</resources>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+    <tab
+        id="@+id/tab_home"
+        icon="@drawable/home"
+        barColorWhenSelected="#212121"
+        title="@string/home_tab" />
+    <tab
+        id="@+id/tab_fav"
+        icon="@drawable/favorite"
+        barColorWhenSelected="#FF2600"
+        title="@string/favorite_tab" />
+    <tab
+        id="@+id/tab_upload"
+        icon="@drawable/add_photo"
+        barColorWhenSelected="#4A90E2"
+        title="@string/add_photo_tab" />
+    <tab
+        id="@+id/tab_profile"
+        icon="@drawable/profile"
+        barColorWhenSelected="#89C623"
+        title="@string/profile_tab" />
+</tabs>

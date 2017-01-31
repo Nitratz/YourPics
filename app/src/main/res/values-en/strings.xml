@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">YourPics</string>
+    <string name="favorite_tab">Favorite</string>
+    <string name="home_tab">Home</string>
+    <string name="profile_tab">Profile</string>
+    <string name="add_photo_tab">Upload</string>
+</resources>
