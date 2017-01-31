@@ -5,4 +5,6 @@
     <string name="home_tab">Home</string>
     <string name="profile_tab">Profile</string>
     <string name="add_photo_tab">Upload</string>
+    <string name="connexion">Log in</string>
+    <string name="deconnexion">Disconnect</string>
 </resources>

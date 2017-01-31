@@ -5,4 +5,6 @@
     <string name="favorite_tab">Favoris</string>
     <string name="add_photo_tab">Partager</string>
     <string name="home_tab">Acceuil</string>
+    <string name="connexion">Connexion</string>
+    <string name="deconnexion">Deconnexion</string>
 </resources>

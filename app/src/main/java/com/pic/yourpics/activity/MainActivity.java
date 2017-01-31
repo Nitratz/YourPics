@@ -38,26 +38,23 @@ public class MainActivity extends AppCompatActivity {
         mFragFav = new FragmentFavorite();
         mBottomBar = (BottomBar) findViewById(R.id.bottomBar);
 
-        mBottomBar.setOnTabSelectListener(new OnTabSelectListener() {
-            @Override
-            public void onTabSelected(@IdRes int tabId) {
-                FragmentTransaction fTransaction = getSupportFragmentManager().beginTransaction();
-                switch (tabId) {
-                    case R.id.tab_home:
-                        fTransaction.replace(R.id.fragment, mFragHome);
-                        break;
-                    case R.id.tab_fav:
-                        fTransaction.replace(R.id.fragment, mFragFav);
-                        break;
-                    case R.id.tab_upload:
-                        fTransaction.replace(R.id.fragment, mFragUpload);
-                        break;
-                    case R.id.tab_profile:
-                        fTransaction.replace(R.id.fragment, mFragProfile);
-                        break;
-                }
-                fTransaction.commit();
+        mBottomBar.setOnTabSelectListener(tabId -> {
+            FragmentTransaction fTransaction = getSupportFragmentManager().beginTransaction();
+            switch (tabId) {
+                case R.id.tab_home:
+                    fTransaction.replace(R.id.fragment, mFragHome);
+                    break;
+                case R.id.tab_fav:
+                    fTransaction.replace(R.id.fragment, mFragFav);
+                    break;
+                case R.id.tab_upload:
+                    fTransaction.replace(R.id.fragment, mFragUpload);
+                    break;
+                case R.id.tab_profile:
+                    fTransaction.replace(R.id.fragment, mFragProfile);
+                    break;
             }
+            fTransaction.commit();
         });
     }
 }

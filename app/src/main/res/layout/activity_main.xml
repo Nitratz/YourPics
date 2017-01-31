@@ -10,6 +10,7 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
+        android:elevation="5dp"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorAccent"
         android:theme="@style/CustomActionBarTheme">
@@ -20,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:adjustViewBounds="true"
-            android:background="@drawable/home"
+            android:background="@drawable/logo_toolbar"
             android:scaleType="center" />
     </android.support.v7.widget.Toolbar>
 

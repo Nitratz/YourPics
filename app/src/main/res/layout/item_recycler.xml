@@ -31,7 +31,7 @@
             android:paddingTop="8dp"
             android:gravity="center_horizontal"
             android:layout_alignParentBottom="true"
-            android:background="#1976D2"/>
+            android:background="#4D535A"/>
 
     </RelativeLayout>
 
