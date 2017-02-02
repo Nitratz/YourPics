@@ -1,9 +1,8 @@
-package com.pic.yourpics.model.service;
+package com.pic.yourpics.service;
 
 import android.content.Context;
 import android.os.Handler;
 import android.support.test.espresso.core.deps.guava.base.Splitter;
-import android.support.test.espresso.core.deps.guava.util.concurrent.Runnables;
 import android.util.Log;
 
 import com.googlecode.flickrjandroid.Flickr;
@@ -12,7 +11,7 @@ import com.googlecode.flickrjandroid.REST;
 import com.googlecode.flickrjandroid.oauth.OAuth;
 import com.googlecode.flickrjandroid.oauth.OAuthInterface;
 import com.googlecode.flickrjandroid.oauth.OAuthToken;
-import com.pic.yourpics.ConnectionState;
+import com.pic.yourpics.service.callback.ConnectionState;
 
 import java.io.IOException;
 import java.net.MalformedURLException;

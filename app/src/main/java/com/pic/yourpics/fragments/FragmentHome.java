@@ -3,25 +3,19 @@ package com.pic.yourpics.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.test.espresso.core.deps.guava.base.Splitter;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 import com.pic.yourpics.R;
-import com.pic.yourpics.adapter.RecyclerAdapter;
+import com.pic.yourpics.adapter.HomeAdapter;
 import com.pic.yourpics.model.Post;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class FragmentHome extends Fragment {
 
@@ -31,7 +25,7 @@ public class FragmentHome extends Fragment {
     private RecyclerView mRecycler;
 
     private StaggeredGridLayoutManager mGridLayout;
-    private RecyclerAdapter mAdapter;
+    private HomeAdapter mAdapter;
 
     @Nullable
     @Override
@@ -43,7 +37,7 @@ public class FragmentHome extends Fragment {
         mRecycler = (RecyclerView) v.findViewById(R.id.recycler_home);
         mGridLayout = new StaggeredGridLayoutManager(2, 1);
         mRecycler.setLayoutManager(mGridLayout);
-        mAdapter = new RecyclerAdapter(mContext, mListPost);
+        mAdapter = new HomeAdapter(mContext, mListPost);
         mRecycler.setAdapter(mAdapter);
         fillList();
 

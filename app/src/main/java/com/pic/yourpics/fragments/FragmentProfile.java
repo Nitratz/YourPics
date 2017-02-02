@@ -2,12 +2,10 @@ package com.pic.yourpics.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,12 +14,10 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 
-import com.pic.yourpics.ConnectionState;
+import com.pic.yourpics.service.callback.ConnectionState;
 import com.pic.yourpics.R;
-import com.pic.yourpics.ServiceManager;
-import com.pic.yourpics.activity.MainActivity;
-import com.pic.yourpics.model.ImgurToken;
-import com.pic.yourpics.model.service.AService;
+import com.pic.yourpics.service.ServiceManager;
+import com.pic.yourpics.service.AService;
 
 import java.util.ArrayList;
 

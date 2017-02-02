@@ -1,4 +1,4 @@
-package com.pic.yourpics;
+package com.pic.yourpics.service.callback;
 
 public interface ConnectionState {
     void onConnectedService(String name);

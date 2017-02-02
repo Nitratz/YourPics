@@ -7,14 +7,14 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
 import com.pic.yourpics.R;
-import com.pic.yourpics.ServiceManager;
+import com.pic.yourpics.service.ServiceManager;
 import com.pic.yourpics.fragments.FragmentFavorite;
 import com.pic.yourpics.fragments.FragmentHome;
 import com.pic.yourpics.fragments.FragmentProfile;
 import com.pic.yourpics.fragments.FragmentUpload;
-import com.pic.yourpics.model.service.AService;
-import com.pic.yourpics.model.service.FlickrService;
-import com.pic.yourpics.model.service.ImgurService;
+import com.pic.yourpics.service.AService;
+import com.pic.yourpics.service.FlickrService;
+import com.pic.yourpics.service.ImgurService;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 

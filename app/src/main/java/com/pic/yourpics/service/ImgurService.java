@@ -1,9 +1,9 @@
-package com.pic.yourpics.model.service;
+package com.pic.yourpics.service;
 
 import android.content.Context;
 import android.support.test.espresso.core.deps.guava.base.Splitter;
 
-import com.pic.yourpics.ConnectionState;
+import com.pic.yourpics.service.callback.ConnectionState;
 import com.pic.yourpics.model.ImgurToken;
 
 import java.util.ArrayList;

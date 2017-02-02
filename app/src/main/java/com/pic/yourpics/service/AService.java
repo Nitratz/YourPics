@@ -1,4 +1,4 @@
-package com.pic.yourpics.model.service;
+package com.pic.yourpics.service;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;

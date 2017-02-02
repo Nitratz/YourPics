@@ -14,12 +14,12 @@ import com.pic.yourpics.model.Post;
 
 import java.util.ArrayList;
 
-public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
+public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
     private Context mContext;
     private ArrayList<Post> mListPost;
 
-    public RecyclerAdapter(Context context, ArrayList<Post> list) {
+    public HomeAdapter(Context context, ArrayList<Post> list) {
         mContext = context;
         mListPost = list;
     }

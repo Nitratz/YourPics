@@ -1,8 +1,6 @@
-package com.pic.yourpics;
+package com.pic.yourpics.service;
 
 import android.support.v4.app.Fragment;
-
-import com.pic.yourpics.model.service.AService;
 
 import java.util.ArrayList;
 
