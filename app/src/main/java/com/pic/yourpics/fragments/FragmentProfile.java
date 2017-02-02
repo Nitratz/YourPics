@@ -1,11 +1,13 @@
 package com.pic.yourpics.fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.res.ColorStateList;
+import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.test.espresso.core.deps.guava.base.Splitter;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,17 +16,22 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 
+import com.pic.yourpics.ConnectionState;
 import com.pic.yourpics.R;
-import com.pic.yourpics.model.Account;
+import com.pic.yourpics.ServiceManager;
+import com.pic.yourpics.activity.MainActivity;
 import com.pic.yourpics.model.ImgurToken;
+import com.pic.yourpics.model.service.AService;
 
 import java.util.ArrayList;
-import java.util.Map;
 
-public class FragmentProfile extends Fragment implements View.OnClickListener {
+public class FragmentProfile extends Fragment implements View.OnClickListener, ConnectionState {
 
     private Context mContext;
+    private View mView;
+    private ArrayList<AService> mServiceList;
 
+    private ProgressDialog mProgress;
     private Button mImgurConnect;
     private Button mImgurDisconnect;
     private Button mImgurProfile;
@@ -33,22 +40,30 @@ public class FragmentProfile extends Fragment implements View.OnClickListener {
     private Button mFlickrProfile;
 
     private WebView mWebView;
-    private String mRedirect = "http://localhost";
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_profile, container, false);
+        ServiceManager.getInstance().setCurrentFragmentList(this);
+        if (mView != null)
+            return mView;
+        mView = inflater.inflate(R.layout.fragment_profile, container, false);
         mContext = getActivity();
+        mServiceList = ServiceManager.getInstance().getServiceList();
 
-        mWebView = (WebView) v.findViewById(R.id.webview);
-        mImgurConnect = (Button) v.findViewById(R.id.connect_imgur);
-        mImgurDisconnect = (Button) v.findViewById(R.id.disconnect_imgur);
-        mImgurProfile = (Button) v.findViewById(R.id.profile_imgur);
-        mFlickrConnect = (Button) v.findViewById(R.id.connect_flickr);
-        mFlickrDisconnect = (Button) v.findViewById(R.id.disconnect_flickr);
-        mFlickrProfile = (Button) v.findViewById(R.id.profile_flickr);
+        mWebView = (WebView) mView.findViewById(R.id.webview);
+        mImgurConnect = (Button) mView.findViewById(R.id.connect_imgur);
+        mImgurDisconnect = (Button) mView.findViewById(R.id.disconnect_imgur);
+        mImgurProfile = (Button) mView.findViewById(R.id.profile_imgur);
+        mFlickrConnect = (Button) mView.findViewById(R.id.connect_flickr);
+        mFlickrDisconnect = (Button) mView.findViewById(R.id.disconnect_flickr);
+        mFlickrProfile = (Button) mView
+                .findViewById(R.id.profile_flickr);
+        mProgress = new ProgressDialog(mContext);
 
+        mProgress.setCancelable(false);
+        mProgress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgress.setMessage(mContext.getString(R.string.loading_connect));
         mImgurConnect.setOnClickListener(this);
         mImgurDisconnect.setOnClickListener(this);
         mImgurProfile.setOnClickListener(this);
@@ -56,27 +71,26 @@ public class FragmentProfile extends Fragment implements View.OnClickListener {
         mFlickrDisconnect.setOnClickListener(this);
         mFlickrProfile.setOnClickListener(this);
 
-        if (isImgurConnected())
-            setImgurConnected();
         prepareWebView();
-        return v;
+        return mView;
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.connect_imgur:
-                mWebView.loadUrl("https://api.imgur.com/oauth2/authorize?client_id=eb007454f35153b&response_type=token&state=ok");
-                mWebView.setVisibility(View.VISIBLE);
+                connectImgur();
                 break;
             case R.id.disconnect_imgur:
-                setImgurDisconnected();
+                disConnectImgur();
                 break;
             case R.id.profile_imgur:
                 break;
             case R.id.connect_flickr:
+                connectFlickr();
                 break;
             case R.id.disconnect_flickr:
+                disconnectFlickr();
                 break;
             case R.id.profile_flickr:
                 break;
@@ -84,16 +98,77 @@ public class FragmentProfile extends Fragment implements View.OnClickListener {
     }
 
     private void prepareWebView() {
+        mWebView.getSettings().setLoadWithOverviewMode(true);
+        mWebView.getSettings().setUseWideViewPort(true);
+        mWebView.getSettings().setUserAgentString("Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.4) Gecko/20100101 Firefox/4.0");
         mWebView.setWebViewClient(new WebViewClient() {
+
             @Override
-            public void onPageFinished(WebView view, String url) {
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 Log.d("myURL", url);
-                if (url.length() > mRedirect.length())
-                    if (url.substring(0, 16).equals(mRedirect)) {
-                        onImgurConnexionSuccess(url);
-                    }
+                for (AService service : mServiceList) {
+                    if (service.onUserAuthorize(url))
+                        break;
+                }
+            }
+
+            public void onPageFinished(WebView view, String url) {
+                mProgress.dismiss();
             }
         });
+    }
+
+    private void connectImgur() {
+        mProgress.show();
+        AService imgur = ServiceManager.getInstance().getServiceByName("Imgur");
+        imgur.loadAuthLink();
+    }
+
+    private void disConnectImgur() {
+        AService imgur = ServiceManager.getInstance().getServiceByName("Imgur");
+        imgur.disconnectService();
+    }
+
+    private void connectFlickr() {
+        mProgress.show();
+        AService flickr = ServiceManager.getInstance().getServiceByName("Flickr");
+        flickr.loadAuthLink();
+    }
+
+    private void disconnectFlickr() {
+        AService flickr = ServiceManager.getInstance().getServiceByName("Flickr");
+        flickr.disconnectService();
+    }
+
+    @Override
+    public void onConnectedService(String name) {
+        mWebView.setVisibility(View.GONE);
+        switch (name) {
+            case "Imgur":
+                setImgurConnected();
+                break;
+            case "Flickr":
+                setFlickrConnected();
+                break;
+        }
+    }
+
+    @Override
+    public void onUriLoadedSuccessful(String url) {
+        mWebView.setVisibility(View.VISIBLE);
+        mWebView.loadUrl(url);
+    }
+
+    @Override
+    public void onDisconnectedService(String name) {
+        switch (name) {
+            case "Imgur":
+                setImgurDisconnected();
+                break;
+            case "Flickr":
+                setFlickrDisConnected();
+                break;
+        }
     }
 
     private void setImgurConnected() {
@@ -108,27 +183,15 @@ public class FragmentProfile extends Fragment implements View.OnClickListener {
         mImgurProfile.setVisibility(View.GONE);
     }
 
-    private boolean isImgurConnected() {
-        ArrayList<ImgurToken> list = (ArrayList<ImgurToken>) ImgurToken.listAll(ImgurToken.class);
-        if (list.size() > 0) {
-            setImgurConnected();
-            return true;
-        }
-        return false;
+    private void setFlickrConnected() {
+        mFlickrDisconnect.setVisibility(View.VISIBLE);
+        mFlickrConnect.setVisibility(View.GONE);
+        mFlickrProfile.setVisibility(View.VISIBLE);
     }
 
-    private void onImgurConnexionSuccess(String url) {
-        ImgurToken token = new ImgurToken();
-        url = url.substring(27, url.length());
-        Map<String, String> map = Splitter.on('&').trimResults().withKeyValueSeparator("=").split(url);
-        token.setToken(map.get("access_token"))
-                .setRefreshToken(map.get("refresh_token"))
-                .setUserName(map.get("account_username"))
-                .setAccountId(map.get("account_id"));
-        token.save();
-        mWebView.setVisibility(View.GONE);
-        setImgurConnected();
-        ArrayList<ImgurToken> list = (ArrayList<ImgurToken>) ImgurToken.find(ImgurToken.class, "account_id = ?", token.getAccountId());
-        ImgurToken lol = list.get(0);
+    private void setFlickrDisConnected() {
+        mFlickrDisconnect.setVisibility(View.GONE);
+        mFlickrConnect.setVisibility(View.VISIBLE);
+        mFlickrProfile.setVisibility(View.GONE);
     }
 }

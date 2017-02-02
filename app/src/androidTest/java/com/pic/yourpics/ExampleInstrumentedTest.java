@@ -1,4 +1,4 @@
-package yourpics.pic.com.yourpics;
+package com.pic.yourpics;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("yourpics.pic.com.yourpics", appContext.getPackageName());
+        assertEquals("com.pic.yourpics", appContext.getPackageName());
     }
 }

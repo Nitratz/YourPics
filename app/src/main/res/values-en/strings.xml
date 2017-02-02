@@ -7,4 +7,6 @@
     <string name="add_photo_tab">Upload</string>
     <string name="connexion">Log in</string>
     <string name="deconnexion">Disconnect</string>
+    <string name="loading_connect">Loading...</string>
+    <string name="code_request">Authentication code</string>
 </resources>

@@ -1,4 +1,4 @@
-package yourpics.pic.com.yourpics;
+package com.pic.yourpics;
 
 import org.junit.Test;
 

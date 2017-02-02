@@ -7,4 +7,6 @@
     <string name="home_tab">Acceuil</string>
     <string name="connexion">Connexion</string>
     <string name="deconnexion">Deconnexion</string>
+    <string name="loading_connect">Chargement en cours...</string>
+    <string name="code_request">Code d\'authentification</string>
 </resources>
