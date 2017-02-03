@@ -7,21 +7,38 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.pic.yourpics.service.Constants;
 import com.pic.yourpics.R;
+import com.pic.yourpics.activity.callback.OnNoTokenFound;
 import com.pic.yourpics.adapter.HomeAdapter;
-import com.pic.yourpics.model.Post;
+import com.pic.yourpics.model.Album;
+import com.pic.yourpics.request.RequestManager;
+import com.pic.yourpics.request.callback.OnRequestListener;
+import com.pic.yourpics.service.AService;
+import com.pic.yourpics.service.ServiceManager;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class FragmentHome extends Fragment {
+import okhttp3.Request;
+
+import static com.pic.yourpics.service.Constants.REQUEST_TYPE.GALLERY;
+
+public class FragmentHome extends Fragment implements OnRequestListener {
 
     private Context mContext;
+    private View mView;
+    private ArrayList<AService> mServiceList;
 
-    private ArrayList<Post> mListPost;
+    private ArrayList<Album> mListAlbum;
     private RecyclerView mRecycler;
 
     private StaggeredGridLayoutManager mGridLayout;
@@ -30,30 +47,80 @@ public class FragmentHome extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_home, container, false);
+        if (mView != null)
+            return mView;
+        mServiceList = ServiceManager.getInstance().getServiceList();
+        mView = inflater.inflate(R.layout.fragment_home, container, false);
         mContext = getActivity();
-        mListPost = new ArrayList<>();
+        mListAlbum = new ArrayList<>();
 
-        mRecycler = (RecyclerView) v.findViewById(R.id.recycler_home);
+        mRecycler = (RecyclerView) mView.findViewById(R.id.recycler_home);
+
         mGridLayout = new StaggeredGridLayoutManager(2, 1);
         mRecycler.setLayoutManager(mGridLayout);
-        mAdapter = new HomeAdapter(mContext, mListPost);
+        mAdapter = new HomeAdapter(mContext, mListAlbum);
         mRecycler.setAdapter(mAdapter);
-        fillList();
+        requestImgur();
 
-        return v;
+        return mView;
     }
 
-    private void fillList() {
-        for (int i = 0; i < 6; i++) {
-            Post post = new Post();
-            post.setDesc("LOLLOOOLL");
-            post.setTitle("LOOOLL");
-            if (i % 2 == 0)
-                post.setDrawable(ContextCompat.getDrawable(mContext, R.drawable._favorite));
-            else
-                post.setDrawable(ContextCompat.getDrawable(mContext, R.drawable.capture));
-            mListPost.add(post);
+    private void requestImgur() {
+        AService imgur = ServiceManager.getInstance().getServiceByName("Imgur");
+        if (imgur.getToken() == null) {
+            ((OnNoTokenFound) mContext).onFailedToLoadHome();
+            return;
         }
+        Request request = new Request.Builder()
+                .url(Constants.IMGUR_GALLERY + "/hot/viral/0")
+                .addHeader("Authorization", "Bearer " + imgur.getToken()).build();
+        RequestManager.getInstance().newRequest(request, this, GALLERY);
+    }
+
+    @Override
+    public void onSuccess(String response, Constants.REQUEST_TYPE type) {
+        switch (type) {
+            case ALBUM:
+                break;
+            case GALLERY:
+                try {
+                    parserGallery(new JSONObject(response));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onError(String error) {
+        Log.d("myError", error);
+    }
+
+    private void parserGallery(JSONObject object) throws JSONException {
+        JSONArray data = object.getJSONArray("data");
+
+        for (int i = 0; i < data.length(); i++) {
+            Album album = new Album();
+            JSONObject jAlbum = data.getJSONObject(i);
+            album.setId(jAlbum.getString("id"))
+                    .setIsAlbum(jAlbum.getBoolean("is_album"))
+                    .setTitle(jAlbum.getString("title"))
+                    .setDesc(jAlbum.getString("description"))
+                    .setCommentCount(jAlbum.getInt("comment_count"))
+                    .setDownVote(jAlbum.getInt("downs"))
+                    .setUpVote(jAlbum.getInt("ups"))
+                    .setFavorite(jAlbum.getBoolean("favorite"))
+                    .setPoints(jAlbum.getInt("points"))
+                    .setTimeStamp(jAlbum.getLong("datetime"))
+                    .setViews(jAlbum.getInt("views"))
+                    .setVoted(jAlbum.getString("vote"));
+            if (i % 2 == 0)
+                album.setDrawable(ContextCompat.getDrawable(mContext, R.drawable._favorite));
+            else
+                album.setDrawable(ContextCompat.getDrawable(mContext, R.drawable.capture));
+            mListAlbum.add(album);
+        }
+        mAdapter.notifyDataSetChanged();
     }
 }

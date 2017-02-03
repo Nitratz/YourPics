@@ -1,4 +1,4 @@
-package com.pic.yourpics.model;
+package com.pic.yourpics.service.tokens;
 
 import com.orm.SugarRecord;
 import com.orm.dsl.Column;

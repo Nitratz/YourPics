@@ -1,12 +1,15 @@
 package com.pic.yourpics.activity;
 
 import android.support.annotation.IdRes;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
+import com.pic.yourpics.service.Constants;
 import com.pic.yourpics.R;
+import com.pic.yourpics.activity.callback.OnNoTokenFound;
 import com.pic.yourpics.service.ServiceManager;
 import com.pic.yourpics.fragments.FragmentFavorite;
 import com.pic.yourpics.fragments.FragmentHome;
@@ -20,7 +23,7 @@ import com.roughike.bottombar.OnTabSelectListener;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnNoTokenFound {
 
     private BottomBar mBottomBar;
     private Toolbar mToolbar;
@@ -50,29 +53,39 @@ public class MainActivity extends AppCompatActivity {
         mBottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
-                FragmentTransaction fTransaction = getSupportFragmentManager().beginTransaction();
                 switch (tabId) {
                     case R.id.tab_home:
-                        fTransaction.replace(R.id.fragment, mFragHome);
+                        replaceFragment(R.id.fragment, mFragHome);
                         break;
                     case R.id.tab_fav:
-                        fTransaction.replace(R.id.fragment, mFragFav);
+                        replaceFragment(R.id.fragment, mFragFav);
                         break;
                     case R.id.tab_upload:
-                        fTransaction.replace(R.id.fragment, mFragUpload);
+                        replaceFragment(R.id.fragment, mFragUpload);
                         break;
                     case R.id.tab_profile:
-                        fTransaction.replace(R.id.fragment, mFragProfile);
+                        replaceFragment(R.id.fragment, mFragProfile);
                         break;
                 }
-                fTransaction.commit();
             }
         });
     }
 
+    public void replaceFragment(int id, Fragment frag) {
+        FragmentTransaction fTransaction = getSupportFragmentManager().beginTransaction();
+        fTransaction.replace(id, frag);
+        fTransaction.commit();
+    }
+
     private void fillServiceList() {
-        mServiceList.add(new FlickrService(this, "722996a4754d4aa80ce5c4956d8e35ac", "e835a0312d25855b"));
-        mServiceList.add(new ImgurService(this, "eb007454f35153b", "b00197530b399a5a7dce6a16dcc7d98668c06a0c"));
+        mServiceList.add(new FlickrService(this, Constants.FLICKR_API_KEY, Constants.FLICKR_API_SECRET));
+        mServiceList.add(new ImgurService(this, Constants.IMGUR_API_KEY, Constants.IMGUR_API_SECRET));
         ServiceManager.getInstance().setServiceList(mServiceList);
+    }
+
+    @Override
+    public void onFailedToLoadHome() {
+        mBottomBar.selectTabAtPosition(3);
+        replaceFragment(R.id.fragment, mFragProfile);
     }
 }

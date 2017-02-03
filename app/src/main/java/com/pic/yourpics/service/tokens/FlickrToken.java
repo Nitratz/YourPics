@@ -1,15 +1,12 @@
-package com.pic.yourpics.model;
+package com.pic.yourpics.service.tokens;
 
 import com.orm.SugarRecord;
 import com.orm.dsl.Column;
 
-public class Account extends SugarRecord {
+public class FlickrToken extends SugarRecord {
 
     @Column(name="token")
     private String mToken;
-
-    @Column(name="refresh_token")
-    private String mRefreshToken;
 
     @Column(name="username")
     private String mUserName;
@@ -21,17 +18,8 @@ public class Account extends SugarRecord {
         return mToken;
     }
 
-    public Account setToken(String mToken) {
+    public FlickrToken setToken(String mToken) {
         this.mToken = mToken;
-        return this;
-    }
-
-    public String getRefreshToken() {
-        return mRefreshToken;
-    }
-
-    public Account setRefreshToken(String mRefreshToken) {
-        this.mRefreshToken = mRefreshToken;
         return this;
     }
 
@@ -39,7 +27,7 @@ public class Account extends SugarRecord {
         return mUserName;
     }
 
-    public Account setUserName(String mUserName) {
+    public FlickrToken setUserName(String mUserName) {
         this.mUserName = mUserName;
         return this;
     }

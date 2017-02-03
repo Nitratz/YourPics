@@ -10,50 +10,50 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pic.yourpics.R;
-import com.pic.yourpics.model.Post;
+import com.pic.yourpics.model.Album;
 
 import java.util.ArrayList;
 
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
     private Context mContext;
-    private ArrayList<Post> mListPost;
+    private ArrayList<Album> mListAlbum;
 
-    public HomeAdapter(Context context, ArrayList<Post> list) {
+    public HomeAdapter(Context context, ArrayList<Album> list) {
         mContext = context;
-        mListPost = list;
+        mListAlbum = list;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_recycler, parent, false);
+                .inflate(R.layout.item_home, parent, false);
         return new ViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Post post = mListPost.get(position);
+        Album album = mListAlbum.get(position);
 
-        holder.mImage.setBackground(post.getDrawable());
-        holder.mDesc.setText(post.getDesc());
+        holder.mImage.setBackground(album.getDrawable());
+        holder.mTitle.setText(album.getTitle());
     }
 
     @Override
     public int getItemCount() {
-        return mListPost.size();
+        return mListAlbum.size();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         private CardView mCard;
         private ImageView mImage;
-        private TextView mDesc;
+        private TextView mTitle;
 
         ViewHolder(View v) {
             super(v);
             mImage = (ImageView) v.findViewById(R.id.image);
-            mDesc = (TextView) v.findViewById(R.id.desc);
+            mTitle = (TextView) v.findViewById(R.id.title);
         }
     }
 }

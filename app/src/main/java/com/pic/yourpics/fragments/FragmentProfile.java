@@ -68,6 +68,7 @@ public class FragmentProfile extends Fragment implements View.OnClickListener, C
         mFlickrProfile.setOnClickListener(this);
 
         prepareWebView();
+        isServicesConnected();
         return mView;
     }
 
@@ -96,12 +97,13 @@ public class FragmentProfile extends Fragment implements View.OnClickListener, C
     private void prepareWebView() {
         mWebView.getSettings().setLoadWithOverviewMode(true);
         mWebView.getSettings().setUseWideViewPort(true);
+        mWebView.getSettings().setDisplayZoomControls(true);
+        mWebView.getSettings().setBuiltInZoomControls(true);
         mWebView.getSettings().setUserAgentString("Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.4) Gecko/20100101 Firefox/4.0");
         mWebView.setWebViewClient(new WebViewClient() {
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                Log.d("myURL", url);
                 for (AService service : mServiceList) {
                     if (service.onUserAuthorize(url))
                         break;
@@ -151,8 +153,8 @@ public class FragmentProfile extends Fragment implements View.OnClickListener, C
 
     @Override
     public void onUriLoadedSuccessful(String url) {
-        mWebView.setVisibility(View.VISIBLE);
         mWebView.loadUrl(url);
+        mWebView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -189,5 +191,12 @@ public class FragmentProfile extends Fragment implements View.OnClickListener, C
         mFlickrDisconnect.setVisibility(View.GONE);
         mFlickrConnect.setVisibility(View.VISIBLE);
         mFlickrProfile.setVisibility(View.GONE);
+    }
+
+    private void isServicesConnected() {
+        for (AService service : mServiceList) {
+            if (service.isConnected())
+                onConnectedService(service.getServiceName());
+        }
     }
 }

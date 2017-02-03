@@ -12,29 +12,36 @@ import com.googlecode.flickrjandroid.oauth.OAuth;
 import com.googlecode.flickrjandroid.oauth.OAuthInterface;
 import com.googlecode.flickrjandroid.oauth.OAuthToken;
 import com.pic.yourpics.service.callback.ConnectionState;
+import com.pic.yourpics.service.tokens.FlickrToken;
+import com.pic.yourpics.service.tokens.ImgurToken;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 public class FlickrService extends AService {
 
+    private FlickrToken mAuthToken;
     private OAuthInterface mInterfaceFlickr;
-    private OAuthToken mToken;
+    private OAuthToken mOAuthToken;
     private OAuth mAuth;
+    private String mUrl;
     private String mState;
 
     private Thread mAuthThread;
     private Runnable mAuthRunnable;
     private Thread mTokenThread;
     private Runnable mTokenRunnable;
-    private Handler mHandler;
+    private Handler mTokenHandler;
+    private Handler mAuthHandler;
     private boolean isDone = false;
 
     public FlickrService(Context context) {
         super(context);
+        getStoredToken();
         mRedirectLink = "http://localhost/";
         mState = "?state=flickr";
         mServiceName = "Flickr";
@@ -42,19 +49,16 @@ public class FlickrService extends AService {
 
     public FlickrService(Context context, String apiKey, String apiSecret) {
         super(context, apiKey, apiSecret);
+        getStoredToken();
         mRedirectLink = "http://localhost/";
         mState = "?state=flickr";
         mServiceName = "Flickr";
     }
 
     @Override
-    public void disconnectService() {
-
-    }
-
-    @Override
     public boolean onUserAuthorize(String url) {
         isDone = false;
+        mTokenThread.interrupt();
         int count = 0;
         String[] urlSplitted = url.split("&");
 
@@ -65,19 +69,6 @@ public class FlickrService extends AService {
             if (mAuthThread == null)
                 mAuthThread = new Thread(mAuthRunnable);
             mAuthThread.start();
-            while (!isDone) {
-                count++;
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                if (count == 2000) {
-                    isDone = true;
-                    return false;
-                }
-            }
-            ((ConnectionState) mCurrentFragment).onConnectedService(mServiceName);
             return true;
         }
         return false;
@@ -89,7 +80,7 @@ public class FlickrService extends AService {
             isDone = false;
             Flickr flickr1 = new Flickr(mApiKey, mApiSecret, new REST());
             mInterfaceFlickr = flickr1.getOAuthInterface();
-            mHandler = new Handler();
+            mTokenHandler = new Handler();
             if (mTokenRunnable == null)
                 createTokenRunnable();
             if (mTokenThread == null)
@@ -106,18 +97,19 @@ public class FlickrService extends AService {
             public void run() {
                 while (!isDone) {
                     try {
-                        mToken = mInterfaceFlickr.getRequestToken(mRedirectLink + mState);
+                        mOAuthToken = mInterfaceFlickr.getRequestToken(mRedirectLink + mState);
                     } catch (IOException | FlickrException e) {
                         e.printStackTrace();
                     }
-                    if (mToken != null) {
+                    if (mOAuthToken != null) {
                         isDone = true;
-                        mHandler.post(new Runnable() {
+                        Log.d("myFlickrToken", "Token Flickr done !");
+                        mTokenHandler.post(new Runnable() {
                             @Override
                             public void run() {
                                 try {
-                                    String authLink = mInterfaceFlickr.buildAuthenticationUrl(com.googlecode.flickrjandroid.auth.Permission.DELETE, mToken).toString();
-                                    ((ConnectionState) mCurrentFragment).onUriLoadedSuccessful(authLink);
+                                    mUrl = mInterfaceFlickr.buildAuthenticationUrl(com.googlecode.flickrjandroid.auth.Permission.DELETE, mOAuthToken).toString();
+                                    ((ConnectionState) mCurrentFragment).onUriLoadedSuccessful(mUrl);
                                 } catch (MalformedURLException e) {
                                     e.printStackTrace();
                                 }
@@ -135,16 +127,42 @@ public class FlickrService extends AService {
             public void run() {
                 while (!isDone) {
                     try {
-                        mAuth = mInterfaceFlickr.getAccessToken(mToken.getOauthToken(), mToken.getOauthTokenSecret(), map.get("oauth_verifier"));
+                        mAuth = mInterfaceFlickr.getAccessToken(mOAuthToken.getOauthToken(), mOAuthToken.getOauthTokenSecret(), map.get("oauth_verifier"));
 
                         isDone = true;
-                        Log.d("myNameFlickr", mAuth.getUser().getRealName());
-                        Log.d("myIdFlickr", mAuth.getUser().getId());
+                        mAuthToken.setToken(mOAuthToken.getOauthToken());
+                        mAuthToken.setAccountId(mAuth.getUser().getId());
+                        mAuthToken.setUserName(mAuth.getUser().getRealName());
+                        mAuthToken.save();
+                        mTokenHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                ((ConnectionState) mCurrentFragment).onConnectedService(mServiceName);
+                            }
+                        });
                     } catch (IOException | FlickrException e) {
                         e.printStackTrace();
                     }
                 }
             }
         };
+    }
+
+    private void getStoredToken() {
+        List<FlickrToken> tokens = ImgurToken.listAll(FlickrToken.class);
+        if (tokens != null && tokens.size() > 0) {
+            mAuthToken = tokens.get(0);
+            isConnected = true;
+        } else
+            mAuthToken = new FlickrToken();
+        mToken = mAuthToken.getToken();
+    }
+
+    @Override
+    public void disconnectService() {
+        mToken = null;
+        mAuthToken = new FlickrToken();
+        isConnected = false;
+        ((ConnectionState) mCurrentFragment).onDisconnectedService(mServiceName);
     }
 }

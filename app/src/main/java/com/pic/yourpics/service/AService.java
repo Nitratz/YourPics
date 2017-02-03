@@ -5,6 +5,8 @@ import android.support.v4.app.Fragment;
 
 public abstract class AService {
 
+    protected boolean isConnected;
+
     protected Context mContext;
     protected Fragment mCurrentFragment;
 
@@ -16,12 +18,14 @@ public abstract class AService {
 
     public AService(Context context) {
         mContext = context;
+        isConnected = false;
     }
 
     public AService(Context context, String apiKey, String apiSecret) {
         mContext = context;
         mApiKey = apiKey;
         mApiSecret = apiSecret;
+        isConnected = false;
     }
 
     public String getServiceName() {
@@ -69,4 +73,8 @@ public abstract class AService {
     public abstract boolean onUserAuthorize(String url);
 
     public abstract void loadAuthLink();
+
+    public boolean isConnected() {
+        return isConnected;
+    }
 }
