@@ -2,6 +2,7 @@ package com.pic.yourpics.request;
 
 import android.os.AsyncTask;
 
+import com.google.firebase.crash.FirebaseCrash;
 import com.pic.yourpics.service.Constants;
 import com.pic.yourpics.request.callback.OnRequestListener;
 
@@ -36,6 +37,7 @@ class AsyncRequest extends AsyncTask<Request, Void, String> {
             return response.body().string();
         } catch (IOException e) {
             e.printStackTrace();
+            FirebaseCrash.report(e);
             return null;
         }
     }
@@ -50,6 +52,7 @@ class AsyncRequest extends AsyncTask<Request, Void, String> {
             else
                 mListener.onSuccess(s, mType);
         } catch (JSONException e) {
+            FirebaseCrash.report(e);
             e.printStackTrace();
             mListener.onError("Error parsing JSON");
         }

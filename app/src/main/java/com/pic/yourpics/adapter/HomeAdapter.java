@@ -1,6 +1,7 @@
 package com.pic.yourpics.adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,8 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.pic.yourpics.R;
 import com.pic.yourpics.model.Album;
+import com.pic.yourpics.model.Image;
 
 import java.util.ArrayList;
 
@@ -35,8 +38,16 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Album album = mListAlbum.get(position);
-
-        holder.mImage.setBackground(album.getDrawable());
+        if (album.isAlbum() && album.getImageList() != null) {
+            Image cover = album.getImageList().get(0);
+            Glide.with(mContext).load(cover.getLink())
+                    .placeholder(R.drawable.capture)
+                    .override(cover.getWidth(), cover.getHeight())
+                    .into(holder.mImage);
+        } else
+            Glide.with(mContext).load(album.getLink())
+                    .placeholder(R.drawable.capture)
+                    .into(holder.mImage);
         holder.mTitle.setText(album.getTitle());
     }
 

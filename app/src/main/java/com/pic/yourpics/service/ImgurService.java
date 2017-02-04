@@ -67,6 +67,7 @@ public class ImgurService extends AService {
     @Override
     public void disconnectService() {
         mToken = null;
+        mAuthToken.delete();
         mAuthToken = new ImgurToken();
         isConnected = false;
         ((ConnectionState) mCurrentFragment).onDisconnectedService(mServiceName);

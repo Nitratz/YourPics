@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crash.FirebaseCrash;
 import com.pic.yourpics.service.Constants;
 import com.pic.yourpics.R;
 import com.pic.yourpics.activity.callback.OnNoTokenFound;
@@ -28,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements OnNoTokenFound {
     private BottomBar mBottomBar;
     private Toolbar mToolbar;
     private ArrayList<AService> mServiceList;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     private FragmentProfile mFragProfile;
     private FragmentFavorite mFragFav;
@@ -38,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements OnNoTokenFound {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         mToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -55,20 +59,32 @@ public class MainActivity extends AppCompatActivity implements OnNoTokenFound {
             public void onTabSelected(@IdRes int tabId) {
                 switch (tabId) {
                     case R.id.tab_home:
+                        analyticsBottomBar(R.id.tab_profile, "TabHome");
                         replaceFragment(R.id.fragment, mFragHome);
                         break;
                     case R.id.tab_fav:
+                        analyticsBottomBar(R.id.tab_profile, "TabFavorite");
                         replaceFragment(R.id.fragment, mFragFav);
                         break;
                     case R.id.tab_upload:
+                        analyticsBottomBar(R.id.tab_profile, "TabUpload");
                         replaceFragment(R.id.fragment, mFragUpload);
                         break;
                     case R.id.tab_profile:
+                        analyticsBottomBar(R.id.tab_profile, "TabProfile");
                         replaceFragment(R.id.fragment, mFragProfile);
                         break;
                 }
             }
         });
+    }
+
+    private void analyticsBottomBar(int id, String name) {
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, String.valueOf(id));
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, name);
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "fragmentBottomBar");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
     }
 
     public void replaceFragment(int id, Fragment frag) {

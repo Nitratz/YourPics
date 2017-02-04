@@ -1,0 +1,50 @@
+{
+  "project_info": {
+    "project_number": "172930603496",
+    "firebase_url": "https://yourpics-d4189.firebaseio.com",
+    "project_id": "yourpics-d4189",
+    "storage_bucket": "yourpics-d4189.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:172930603496:android:1df05a07025811e0",
+        "android_client_info": {
+          "package_name": "com.pic.yourpics"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "172930603496-78dfn4a50kf7quhsqu4sjarka0csnc6c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzr-mCFyZWFQDtvdNEPDevFP5u8a8zEtQ"
+        },
+        {
+          "current_key": "AIzaSyAgR4BkNGl7reqUwNhheDf67yBVEs-B-tA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "172930603496-78dfn4a50kf7quhsqu4sjarka0csnc6c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

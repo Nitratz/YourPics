@@ -1,7 +1,5 @@
 package com.pic.yourpics.model;
 
-import android.graphics.drawable.Drawable;
-
 import java.util.ArrayList;
 
 public class Album {
@@ -12,7 +10,7 @@ public class Album {
     private long mTimeStamp;
     private String mTitle;
     private String mDesc;
-    private Drawable mDrawable;
+    private String mLink;
     private int mUpVote;
     private int mDownVote;
     private int mPoints;
@@ -49,15 +47,6 @@ public class Album {
         return this;
     }
 
-    public Drawable getDrawable() {
-        return mDrawable;
-    }
-
-    public Album setDrawable(Drawable mDrawable) {
-        this.mDrawable = mDrawable;
-        return this;
-    }
-
     public int getUpVote() {
         return mUpVote;
     }
@@ -65,6 +54,14 @@ public class Album {
     public Album setUpVote(int mUpVote) {
         this.mUpVote = mUpVote;
         return this;
+    }
+
+    public String getLink() {
+        return mLink;
+    }
+
+    public void setLink(String mLink) {
+        this.mLink = mLink;
     }
 
     public int getDownVote() {

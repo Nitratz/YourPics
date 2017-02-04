@@ -14,4 +14,5 @@ public class Constants {
     }
 
     public static final String IMGUR_GALLERY = "https://api.imgur.com/3/gallery/";
+    public static final String IMGUR_ALBUM = "\thttps://api.imgur.com/3/gallery/album/";
 }

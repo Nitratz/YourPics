@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.support.test.espresso.core.deps.guava.base.Splitter;
 import android.util.Log;
 
+import com.google.firebase.crash.FirebaseCrash;
 import com.googlecode.flickrjandroid.Flickr;
 import com.googlecode.flickrjandroid.FlickrException;
 import com.googlecode.flickrjandroid.REST;
@@ -58,11 +59,12 @@ public class FlickrService extends AService {
     @Override
     public boolean onUserAuthorize(String url) {
         isDone = false;
-        mTokenThread.interrupt();
         int count = 0;
         String[] urlSplitted = url.split("&");
 
         if (urlSplitted[0].equals(mRedirectLink + mState)) {
+            if (mTokenThread != null)
+                mTokenThread.interrupt();
             Map<String, String> map = Splitter.on('&').trimResults().withKeyValueSeparator("=").split(url);
             if (mAuthRunnable == null)
                 createAuthRunnable(map);
@@ -88,6 +90,7 @@ public class FlickrService extends AService {
             mTokenThread.start();
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
+            FirebaseCrash.report(e);
         }
     }
 
@@ -111,6 +114,7 @@ public class FlickrService extends AService {
                                     mUrl = mInterfaceFlickr.buildAuthenticationUrl(com.googlecode.flickrjandroid.auth.Permission.DELETE, mOAuthToken).toString();
                                     ((ConnectionState) mCurrentFragment).onUriLoadedSuccessful(mUrl);
                                 } catch (MalformedURLException e) {
+                                    FirebaseCrash.report(e);
                                     e.printStackTrace();
                                 }
                             }
@@ -141,6 +145,7 @@ public class FlickrService extends AService {
                             }
                         });
                     } catch (IOException | FlickrException e) {
+                        FirebaseCrash.report(e);
                         e.printStackTrace();
                     }
                 }
@@ -161,6 +166,7 @@ public class FlickrService extends AService {
     @Override
     public void disconnectService() {
         mToken = null;
+        mAuthToken.delete();
         mAuthToken = new FlickrToken();
         isConnected = false;
         ((ConnectionState) mCurrentFragment).onDisconnectedService(mServiceName);
