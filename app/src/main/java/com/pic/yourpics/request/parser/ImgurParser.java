@@ -104,7 +104,8 @@ public class ImgurParser {
                             .setDownVote(img.getString("downs"))
                             .setUpVote(img.getString("ups"))
                             .setType(img.getString("type"))
-                            .setCommentCount(img.getString("comment_count"));
+                            .setCommentCount(img.getString("comment_count"))
+                            .setAspectRatio();
                     imageList.add(image);
                 }
                 album.setImageList(imageList);

@@ -1,6 +1,7 @@
 package com.pic.yourpics.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -38,16 +39,20 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Album album = mListAlbum.get(position);
+        holder.mImage.setImageDrawable(null);
+        holder.mImage.setAspectRatio(1.0f);
+
         if (album.isAlbum() && album.getImageList() != null) {
             Image cover = album.getImageList().get(0);
+            holder.mImage.setAspectRatio(cover.getAspectRatio());
             Glide.with(mContext).load(cover.getLink())
-                    .placeholder(R.drawable.capture)
-                    .override(cover.getWidth(), cover.getHeight())
+                    .placeholder(new ColorDrawable(ContextCompat.getColor(mContext, R.color.colorAccent)))
                     .into(holder.mImage);
-        } else
+        } else {
             Glide.with(mContext).load(album.getLink())
-                    .placeholder(R.drawable.capture)
+                    .placeholder(new ColorDrawable(ContextCompat.getColor(mContext, R.color.colorAccent)))
                     .into(holder.mImage);
+        }
         holder.mTitle.setText(album.getTitle());
     }
 
@@ -58,12 +63,12 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         private CardView mCard;
-        private ImageView mImage;
+        private ThumbnailImageView mImage;
         private TextView mTitle;
 
         ViewHolder(View v) {
             super(v);
-            mImage = (ImageView) v.findViewById(R.id.image);
+            mImage = (ThumbnailImageView) v.findViewById(R.id.image);
             mTitle = (TextView) v.findViewById(R.id.title);
         }
     }

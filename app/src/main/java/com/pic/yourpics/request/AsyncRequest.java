@@ -46,6 +46,10 @@ class AsyncRequest extends AsyncTask<Request, Void, String> {
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
         try {
+            if (s == null) {
+                mListener.onError("String is null");
+                return;
+            }
             JSONObject obj = new JSONObject(s);
             if (!obj.getBoolean("success"))
                 mListener.onError(s);

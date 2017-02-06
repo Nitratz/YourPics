@@ -61,7 +61,7 @@ public class FragmentHome extends Fragment implements OnRequestListener {
 
         mRecycler = (RecyclerView) mView.findViewById(R.id.recycler_home);
 
-        mGridLayout = new StaggeredGridLayoutManager(2, 1);
+        mGridLayout = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mRecycler.setLayoutManager(mGridLayout);
         mAdapter = new HomeAdapter(mContext, mListAlbum);
         mRecycler.setAdapter(mAdapter);

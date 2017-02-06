@@ -3,6 +3,8 @@ package com.pic.yourpics.model;
 public class Image {
 
     private String mId;
+    private float mAspectRatio;
+    private final float minAspectRatio = 0.7f;
 
     private String mLink;
     private int mWidth;
@@ -14,6 +16,14 @@ public class Image {
     private String mUpVote;
     private String mDownVote;
     private String mPoints;
+
+    public float getAspectRatio() {
+        return mAspectRatio;
+    }
+
+    public void setAspectRatio() {
+        mAspectRatio = Math.max(minAspectRatio, (float) mWidth / (float) mHeight);
+    }
 
     public String getId() {
         return mId;

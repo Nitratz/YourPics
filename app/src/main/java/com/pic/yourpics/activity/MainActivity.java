@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements OnNoTokenFound {
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, String.valueOf(id));
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, name);
-        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "fragmentBottomBar");
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, name);
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
     }
 
