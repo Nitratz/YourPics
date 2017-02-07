@@ -4,7 +4,6 @@ public class Image {
 
     private String mId;
     private float mAspectRatio;
-    private final float minAspectRatio = 0.7f;
 
     private String mLink;
     private int mWidth;
@@ -22,7 +21,7 @@ public class Image {
     }
 
     public void setAspectRatio() {
-        mAspectRatio = Math.max(minAspectRatio, (float) mWidth / (float) mHeight);
+        mAspectRatio = Math.max(0.7f, (float) mWidth / (float) mHeight);
     }
 
     public String getId() {

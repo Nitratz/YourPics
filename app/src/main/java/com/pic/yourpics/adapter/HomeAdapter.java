@@ -18,6 +18,9 @@ import com.pic.yourpics.model.Image;
 
 import java.util.ArrayList;
 
+import static com.bumptech.glide.load.engine.DiskCacheStrategy.RESULT;
+import static com.bumptech.glide.load.engine.DiskCacheStrategy.SOURCE;
+
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
     private Context mContext;
@@ -46,10 +49,13 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
             Image cover = album.getImageList().get(0);
             holder.mImage.setAspectRatio(cover.getAspectRatio());
             Glide.with(mContext).load(cover.getLink())
+                    .diskCacheStrategy(SOURCE)
                     .placeholder(new ColorDrawable(ContextCompat.getColor(mContext, R.color.colorAccent)))
                     .into(holder.mImage);
         } else {
+            holder.mImage.setAspectRatio(album.getAspectRatio());
             Glide.with(mContext).load(album.getLink())
+                    .diskCacheStrategy(SOURCE)
                     .placeholder(new ColorDrawable(ContextCompat.getColor(mContext, R.color.colorAccent)))
                     .into(holder.mImage);
         }

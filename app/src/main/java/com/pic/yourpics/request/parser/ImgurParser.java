@@ -74,10 +74,15 @@ public class ImgurParser {
                     .setViews(jAlbum.getInt("views"))
                     .setVoted(jAlbum.getString("vote"));
             if (album.isAlbum()) {
+                album.setCoverWidth(jAlbum.getInt("cover_width"))
+                        .setCoverHeight(jAlbum.getInt("cover_height"));
                 requestImgurAlbum(album.getId());
             } else {
-                album.setLink(jAlbum.getString("link"));
+                album.setCoverWidth(jAlbum.getInt("width"))
+                        .setCoverHeight(jAlbum.getInt("height"))
+                        .setLink(jAlbum.getString("link"));
             }
+            album.setAspectRatio();
             listAlbum.add(album);
         }
         return listAlbum;

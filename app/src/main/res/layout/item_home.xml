@@ -27,6 +27,8 @@
             android:layout_below="@id/image"
             android:background="#4D535A"
             android:gravity="top|left"
+            android:maxLines="2"
+            android:ellipsize="marquee"
             android:paddingBottom="8dp"
             android:paddingLeft="2dp"
             android:paddingTop="2dp"

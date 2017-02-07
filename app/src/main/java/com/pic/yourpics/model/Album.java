@@ -11,6 +11,10 @@ public class Album {
     private String mTitle;
     private String mDesc;
     private String mLink;
+    private String mCover;
+    private float mCoverRatio;
+    private int mCoverWidth;
+    private int mCoverHeight;
     private int mUpVote;
     private int mDownVote;
     private int mPoints;
@@ -35,6 +39,41 @@ public class Album {
 
     public Album setTitle(String mTitle) {
         this.mTitle = mTitle;
+        return this;
+    }
+
+    public void setAspectRatio() {
+        mCoverRatio = Math.max(0.7f, (float)  mCoverWidth / (float) mCoverHeight);
+    }
+
+    public float getAspectRatio() {
+        return mCoverRatio;
+    }
+
+    public String gemCover() {
+        return mCover;
+    }
+
+    public Album setCover(String mCover) {
+        this.mCover = mCover;
+        return this;
+    }
+
+    public int getCoverWidth() {
+        return mCoverWidth;
+    }
+
+    public Album setCoverWidth(int mCoverWidth) {
+        this.mCoverWidth = mCoverWidth;
+        return this;
+    }
+
+    public int getCoverHeight() {
+        return mCoverHeight;
+    }
+
+    public Album setCoverHeight(int mCoverHeight) {
+        this.mCoverHeight = mCoverHeight;
         return this;
     }
 
