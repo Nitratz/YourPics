@@ -1,10 +1,13 @@
 package com.pic.yourpics.fragments;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AlertDialogLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
@@ -39,6 +42,7 @@ public class FragmentHome extends Fragment implements OnRequestListener {
 
     private Context mContext;
     private View mView;
+    private AlertDialog mAlertDialog;
     private ArrayList<AService> mServiceList;
     private ImgurParser mImgurParser;
 
@@ -65,9 +69,16 @@ public class FragmentHome extends Fragment implements OnRequestListener {
         mRecycler.setLayoutManager(mGridLayout);
         mAdapter = new HomeAdapter(mContext, mListAlbum);
         mRecycler.setAdapter(mAdapter);
-        mImgurParser.requestImgurGallery();
 
         return mView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mListAlbum.clear();
+        mImgurParser.requestImgurGallery();
+
     }
 
     @Override
@@ -95,6 +106,17 @@ public class FragmentHome extends Fragment implements OnRequestListener {
 
     @Override
     public void onError(String error) {
-        Log.d("myError", error);
+        if (mAlertDialog != null) {
+            mAlertDialog.setMessage(error);
+        }
+        mAlertDialog = new AlertDialog.Builder(mContext)
+                .setTitle("Delete entry")
+                .setMessage("Are you sure you want to delete this entry?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
     }
 }

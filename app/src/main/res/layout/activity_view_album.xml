@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="@color/colorAccent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:gravity="center_vertical"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp"
+        android:background="@color/colorPrimaryDark"
+        android:layout_height="50dp">
+
+        <ToggleButton
+            android:id="@+id/up_vote"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/ic_favorite_border_white"
+            android:textOn=""
+            android:textOff=""/>
+
+        <ToggleButton
+            android:id="@+id/fav"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/ic_favorite_border_white"
+            android:textOn=""
+            android:layout_centerHorizontal="true"
+            android:textOff=""/>
+
+        <ToggleButton
+            android:id="@+id/down_vote"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/ic_favorite_border_white"
+            android:textOn=""
+            android:textOff=""/>
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

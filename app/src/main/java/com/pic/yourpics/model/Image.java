@@ -24,6 +24,10 @@ public class Image {
         mAspectRatio = Math.max(0.7f, (float) mWidth / (float) mHeight);
     }
 
+    public void setAspectRatio(float aspectRatio) {
+        mAspectRatio = aspectRatio;
+    }
+
     public String getId() {
         return mId;
     }
