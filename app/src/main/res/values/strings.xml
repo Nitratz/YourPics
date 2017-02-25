@@ -3,10 +3,18 @@
 
     <string name="profile_tab">Profile</string>
     <string name="favorite_tab">Favoris</string>
-    <string name="add_photo_tab">Partager</string>
+    <string name="add_photo_tab" translatable="false">Upload</string>
     <string name="home_tab">Acceuil</string>
     <string name="connexion">Connexion</string>
     <string name="deconnexion">Deconnexion</string>
+    <string name="select">Selectionner une photo (10MB MAX)</string>
     <string name="loading_connect">Chargement en cours...</string>
     <string name="code_request">Code d\'authentification</string>
+    <string name="alert_image_large">Image trop grande !</string>
+    <string name="alert_error_title">Erreur</string>
+    <string name="alert_success">Réussi</string>
+    <string name="image_uploaded">Image correctement upload !</string>
+    <string name="image_title">Titre de l\'image (optionnel)</string>
+    <string name="image_desc">Description de l\'image (optionnel)</string>
+    <string name="alert_error_desc">Une erreur est survenue.</string>
 </resources>

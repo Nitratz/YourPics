@@ -1,6 +1,8 @@
 package com.pic.yourpics.request.parser;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.util.Base64;
 import android.util.Log;
 
 import com.pic.yourpics.activity.callback.OnNoTokenFound;
@@ -16,12 +18,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
+import okhttp3.MultipartBody;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 
-import static com.pic.yourpics.service.Constants.REQUEST_TYPE.ALBUM;
-import static com.pic.yourpics.service.Constants.REQUEST_TYPE.GALLERY;
+import com.pic.yourpics.service.Constants.REQUEST_TYPE;
 
 public class ImgurParser {
 
@@ -33,16 +37,46 @@ public class ImgurParser {
         mContext = context;
     }
 
-    public void requestImgurGallery() {
+    public void postImgurImage(Bitmap image) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        Log.d("mybyte", image.getByteCount() + " wow");
+        if (image.getByteCount() > 10000000)
+            return;
+        byte[] imageBytes = baos.toByteArray();
+        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+
+        AService imgur = ServiceManager.getInstance().getServiceByName("Imgur");
+        if (imgur.getToken() == null) {
+            ((OnNoTokenFound) mContext).onFailedToLoadHome();
+            return;
+        }
+
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("image", encodedImage)
+                .addFormDataPart("type", "base64")
+                .build();
+
+        Request request = new Request.Builder()
+                .url(Constants.IMGUR_BASE + "/image")
+                .addHeader("Authorization", "Bearer " + imgur.getToken())
+                .method("POST", RequestBody.create(null, new byte[0]))
+                .post(requestBody)
+                .build();
+        RequestManager.getInstance().newRequest(request, mListener, REQUEST_TYPE.UPLOAD);
+    }
+
+    public void requestImgurGallery(int page) {
         AService imgur = ServiceManager.getInstance().getServiceByName("Imgur");
         if (imgur.getToken() == null) {
             ((OnNoTokenFound) mContext).onFailedToLoadHome();
             return;
         }
         Request request = new Request.Builder()
-                .url(Constants.IMGUR_GALLERY + "hot/viral/0.json")
+                .url(Constants.IMGUR_GALLERY + "hot/viral/" + page + ".json")
                 .addHeader("Authorization", "Bearer " + imgur.getToken()).build();
-        RequestManager.getInstance().newRequest(request, mListener, GALLERY);
+        RequestManager.getInstance().newRequest(request, mListener, REQUEST_TYPE.GALLERY);
     }
 
     private void requestImgurAlbum(String id) {
@@ -51,7 +85,7 @@ public class ImgurParser {
         Request request = new Request.Builder()
                 .url(Constants.IMGUR_ALBUM + id)
                 .addHeader("Authorization", "Bearer " + imgur.getToken()).build();
-        RequestManager.getInstance().newRequest(request, mListener, ALBUM);
+        RequestManager.getInstance().newRequest(request, mListener, REQUEST_TYPE.ALBUM);
     }
 
     public ArrayList<Album> parserGallery(JSONObject object) throws JSONException {

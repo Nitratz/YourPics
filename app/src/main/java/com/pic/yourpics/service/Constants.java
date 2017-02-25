@@ -11,8 +11,10 @@ public class Constants {
     public static enum REQUEST_TYPE {
         GALLERY,
         ALBUM,
+        UPLOAD,
     }
 
+    public static final String IMGUR_BASE = "https://api.imgur.com/3";
     public static final String IMGUR_GALLERY = "https://api.imgur.com/3/gallery/";
-    public static final String IMGUR_ALBUM = "\thttps://api.imgur.com/3/gallery/album/";
+    public static final String IMGUR_ALBUM = "https://api.imgur.com/3/gallery/album/";
 }

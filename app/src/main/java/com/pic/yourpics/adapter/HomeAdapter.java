@@ -19,6 +19,8 @@ import com.pic.yourpics.R;
 import com.pic.yourpics.activity.ViewAlbumActivity;
 import com.pic.yourpics.model.Album;
 import com.pic.yourpics.model.Image;
+import com.pic.yourpics.request.callback.OnRequestListener;
+import com.pic.yourpics.request.parser.ImgurParser;
 
 import java.util.ArrayList;
 
@@ -27,11 +29,18 @@ import static com.bumptech.glide.load.engine.DiskCacheStrategy.SOURCE;
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> implements View.OnClickListener {
 
     private Context mContext;
+    private OnRequestListener mListener;
+
+    private int mPage;
+    private boolean isLoading;
     private ArrayList<Album> mListAlbum;
 
-    public HomeAdapter(Context context, ArrayList<Album> list) {
+    public HomeAdapter(OnRequestListener listener, Context context, ArrayList<Album> list) {
         mContext = context;
+        mListener = listener;
         mListAlbum = list;
+        mPage = 1;
+        isLoading = false;
     }
 
     @Override
@@ -44,6 +53,11 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> im
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Album album = mListAlbum.get(position);
+
+        if (!isLoading && position >= mListAlbum.size() - 10) {
+            isLoading = true;
+            new ImgurParser(mContext, mListener).requestImgurGallery(mPage++);
+        }
         holder.mImage.setImageDrawable(null);
         holder.mImage.setAspectRatio(1.0f);
 
@@ -94,5 +108,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> im
         data = gson.toJson(album);
         intent.putExtra("album", data);
         mContext.startActivity(intent);
+    }
+
+    public void stopLoading() {
+        isLoading = false;
     }
 }

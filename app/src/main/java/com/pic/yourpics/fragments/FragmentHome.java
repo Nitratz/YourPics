@@ -10,7 +10,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AlertDialogLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,24 +18,16 @@ import com.google.firebase.crash.FirebaseCrash;
 import com.pic.yourpics.request.parser.ImgurParser;
 import com.pic.yourpics.service.Constants;
 import com.pic.yourpics.R;
-import com.pic.yourpics.activity.callback.OnNoTokenFound;
 import com.pic.yourpics.adapter.HomeAdapter;
 import com.pic.yourpics.model.Album;
-import com.pic.yourpics.request.RequestManager;
 import com.pic.yourpics.request.callback.OnRequestListener;
 import com.pic.yourpics.service.AService;
 import com.pic.yourpics.service.ServiceManager;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-
-import okhttp3.Request;
-
-import static com.pic.yourpics.service.Constants.REQUEST_TYPE.ALBUM;
-import static com.pic.yourpics.service.Constants.REQUEST_TYPE.GALLERY;
 
 public class FragmentHome extends Fragment implements OnRequestListener {
 
@@ -51,12 +42,14 @@ public class FragmentHome extends Fragment implements OnRequestListener {
 
     private StaggeredGridLayoutManager mGridLayout;
     private HomeAdapter mAdapter;
+    private boolean mPaused;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (mView != null)
             return mView;
+        mPaused = false;
         mServiceList = ServiceManager.getInstance().getServiceList();
         mView = inflater.inflate(R.layout.fragment_home, container, false);
         mContext = getActivity();
@@ -67,7 +60,7 @@ public class FragmentHome extends Fragment implements OnRequestListener {
 
         mGridLayout = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mRecycler.setLayoutManager(mGridLayout);
-        mAdapter = new HomeAdapter(mContext, mListAlbum);
+        mAdapter = new HomeAdapter(this, mContext, mListAlbum);
         mRecycler.setAdapter(mAdapter);
 
         return mView;
@@ -76,9 +69,16 @@ public class FragmentHome extends Fragment implements OnRequestListener {
     @Override
     public void onResume() {
         super.onResume();
-        mListAlbum.clear();
-        mImgurParser.requestImgurGallery();
+        mPaused = false;
+        if (mListAlbum.size() == 0)
+            mImgurParser.requestImgurGallery(0);
 
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mPaused = true;
     }
 
     @Override
@@ -91,6 +91,7 @@ public class FragmentHome extends Fragment implements OnRequestListener {
                     e.printStackTrace();
                     FirebaseCrash.report(e);
                 }
+                mAdapter.stopLoading();
                 mAdapter.notifyDataSetChanged();
                 break;
             case GALLERY:
@@ -106,12 +107,16 @@ public class FragmentHome extends Fragment implements OnRequestListener {
 
     @Override
     public void onError(String error) {
+        if (mPaused)
+            return;
         if (mAlertDialog != null) {
-            mAlertDialog.setMessage(error);
+            mAlertDialog.show();
         }
+        mAdapter.stopLoading();
         mAlertDialog = new AlertDialog.Builder(mContext)
-                .setTitle("Delete entry")
-                .setMessage("Are you sure you want to delete this entry?")
+                .setTitle(getString(R.string.alert_error_title))
+                .setCancelable(false)
+                .setMessage(getString(R.string.alert_error_desc))
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();

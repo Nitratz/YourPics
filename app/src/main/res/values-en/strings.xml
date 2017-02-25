@@ -4,9 +4,16 @@
     <string name="favorite_tab">Favorite</string>
     <string name="home_tab">Home</string>
     <string name="profile_tab">Profile</string>
-    <string name="add_photo_tab">Upload</string>
     <string name="connexion">Log in</string>
     <string name="deconnexion">Disconnect</string>
     <string name="loading_connect">Loading...</string>
     <string name="code_request">Authentication code</string>
+    <string name="alert_error_desc">An error has occured.</string>
+    <string name="alert_error_title">Error</string>
+    <string name="select">Select a picture (10MB MAX)</string>
+    <string name="image_desc">Picture description (optional)</string>
+    <string name="image_title">Picture title (optional)</string>
+    <string name="alert_image_large">Picture too large !</string>
+    <string name="alert_success">Success</string>
+    <string name="image_uploaded">Image successfully uploaded !</string>
 </resources>

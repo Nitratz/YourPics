@@ -1,5 +1,9 @@
 package com.pic.yourpics.activity;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.provider.MediaStore;
 import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -23,6 +27,7 @@ import com.pic.yourpics.service.ImgurService;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements OnNoTokenFound {
@@ -103,5 +108,33 @@ public class MainActivity extends AppCompatActivity implements OnNoTokenFound {
     public void onFailedToLoadHome() {
         mBottomBar.selectTabAtPosition(3);
         replaceFragment(R.id.fragment, mFragProfile);
+    }
+
+    /**
+     * @param data Intent get from onActivityResult
+     * @return Bitmap get from data
+     */
+    private Bitmap getDataFromResult(Intent data) {
+        if (data != null) {
+            try {
+                return MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case 21:
+                if (resultCode == Activity.RESULT_OK) {
+                    Bitmap image = getDataFromResult(data);
+                    if (image != null)
+                        mFragUpload.resultGallery(image);
+                }
+                break;
+        }
     }
 }

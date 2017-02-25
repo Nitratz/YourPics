@@ -1,12 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:background="#303030"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#303030"
+    android:orientation="vertical"
+    android:padding="5dp">
 
-    <TextView
+    <ImageView
+        android:id="@+id/preview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="UPLOAD"/>
-</LinearLayout>
+        android:layout_height="150dp"
+        android:layout_marginTop="20dp"
+        android:focusable="true"
+        android:adjustViewBounds="true"
+        android:focusableInTouchMode="true"
+        android:scaleType="centerCrop" />
+
+    <Button
+        android:id="@+id/select"
+        android:layout_width="wrap_content"
+        android:layout_below="@id/preview"
+        style="@style/SelectableItemBackground"
+        android:textColor="@color/colorPrimary"
+        android:layout_marginBottom="5dp"
+        android:text="@string/select"
+        android:layout_height="wrap_content" />
+
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/hint_title"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_below="@id/select"
+        android:textColorHint="@android:color/white"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/image_title"
+            android:layout_width="match_parent"
+            android:hint="@string/image_title"
+            android:imeOptions="actionNext"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"
+            android:layout_height="wrap_content" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_below="@id/hint_title"
+        android:textColorHint="@android:color/white"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/image_desc"
+            android:layout_width="match_parent"
+            android:hint="@string/image_desc"
+            android:imeOptions="actionDone"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"
+            android:layout_height="wrap_content" />
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:id="@+id/upload"
+        style="@style/SelectableItemBackground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:text="Upload"
+        android:textColor="@color/colorPrimary" />
+</RelativeLayout>
